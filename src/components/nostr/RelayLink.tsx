@@ -1,5 +1,5 @@
 import { Inbox, Send, ShieldAlert } from "lucide-react";
-import { useGrimoire } from "@/core/state";
+import { useAddWindow } from "@/core/state";
 import { useRelayInfo } from "@/hooks/useRelayInfo";
 import {
   HoverCard,
@@ -50,7 +50,7 @@ export function RelayLink({
   className,
   variant = "default",
 }: RelayLinkProps) {
-  const { addWindow } = useGrimoire();
+  const addWindow = useAddWindow();
   const relayInfo = useRelayInfo(url);
 
   const handleClick = () => {

@@ -10,7 +10,7 @@ import {
 import { useNostrEvent } from "@/hooks/useNostrEvent";
 import { UserName } from "../UserName";
 import { Reply } from "lucide-react";
-import { useGrimoire } from "@/core/state";
+import { useAddWindow } from "@/core/state";
 import { InlineReplySkeleton } from "@/components/ui/skeleton";
 import { KindBadge } from "@/components/KindBadge";
 import { getEventDisplayTitle } from "@/lib/event-title";
@@ -145,7 +145,7 @@ function RootScopeDisplay({
   root: CommentRootScope;
   event: NostrEvent;
 }) {
-  const { addWindow } = useGrimoire();
+  const addWindow = useAddWindow();
   const pointer = scopeToPointer(root.scope);
   const rootEvent = useNostrEvent(pointer, event);
 
@@ -189,7 +189,7 @@ function RootScopeDisplay({
  * Shows root scope (what the thread is about) and parent reply (if nested)
  */
 export function Kind1111Renderer({ event, depth = 0 }: BaseEventProps) {
-  const { addWindow } = useGrimoire();
+  const addWindow = useAddWindow();
   const root = getCommentRootScope(event);
   const topLevel = isTopLevelComment(event);
 

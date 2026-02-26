@@ -5,7 +5,7 @@ import { getNip10References } from "applesauce-common/helpers/threading";
 import { useNostrEvent } from "@/hooks/useNostrEvent";
 import { UserName } from "../UserName";
 import { Reply } from "lucide-react";
-import { useGrimoire } from "@/core/state";
+import { useAddWindow } from "@/core/state";
 import { InlineReplySkeleton } from "@/components/ui/skeleton";
 import { KindBadge } from "@/components/KindBadge";
 import { getEventDisplayTitle } from "@/lib/event-title";
@@ -72,7 +72,7 @@ function ParentEventCard({
  * Shows immediate parent (reply) only for cleaner display
  */
 export function Kind1Renderer({ event, depth = 0 }: BaseEventProps) {
-  const { addWindow } = useGrimoire();
+  const addWindow = useAddWindow();
 
   // Use NIP-10 threading helpers
   const refs = getNip10References(event);

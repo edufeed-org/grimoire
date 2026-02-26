@@ -25,7 +25,7 @@ import {
   MessageSquare,
   SmilePlus,
 } from "lucide-react";
-import { useGrimoire } from "@/core/state";
+import { useAddWindow, useGrimoire } from "@/core/state";
 import { useCopy } from "@/hooks/useCopy";
 import { useAccount } from "@/hooks/useAccount";
 import { useSettings } from "@/hooks/useSettings";
@@ -133,7 +133,7 @@ export function EventMenu({
   onReactClick?: () => void;
   canSign?: boolean;
 }) {
-  const { addWindow } = useGrimoire();
+  const addWindow = useAddWindow();
   const { copy, copied } = useCopy();
   const [jsonDialogOpen, setJsonDialogOpen] = useState(false);
 
@@ -303,7 +303,7 @@ export function EventContextMenu({
   onReactClick?: () => void;
   canSign?: boolean;
 }) {
-  const { addWindow } = useGrimoire();
+  const addWindow = useAddWindow();
   const { copy, copied } = useCopy();
   const [jsonDialogOpen, setJsonDialogOpen] = useState(false);
 
@@ -472,7 +472,7 @@ export function ClickableEventTitle({
   className,
   as: Component = "h3",
 }: ClickableEventTitleProps) {
-  const { addWindow } = useGrimoire();
+  const addWindow = useAddWindow();
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -530,7 +530,8 @@ export function BaseEventContainer({
     label?: string;
   };
 }) {
-  const { locale, addWindow } = useGrimoire();
+  const { locale } = useGrimoire();
+  const addWindow = useAddWindow();
   const { canSign, signer, pubkey } = useAccount();
   const { settings } = useSettings();
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);

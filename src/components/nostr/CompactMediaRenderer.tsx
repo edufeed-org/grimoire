@@ -11,7 +11,7 @@
 import { useState } from "react";
 import { Image, Video, Music, File, HardDrive } from "lucide-react";
 import { getHashFromURL } from "blossom-client-sdk/helpers/url";
-import { useGrimoire } from "@/core/state";
+import { useAddWindow } from "@/core/state";
 import { formatFileSize } from "@/lib/imeta";
 import {
   Tooltip,
@@ -112,7 +112,7 @@ function MediaIcon({ type }: { type: "image" | "video" | "audio" }) {
 }
 
 export function CompactMediaRenderer({ url, type, imeta }: MediaRendererProps) {
-  const { addWindow } = useGrimoire();
+  const addWindow = useAddWindow();
   const [expanded, setExpanded] = useState(false);
 
   const truncatedHash = getTruncatedHash(url);

@@ -25,7 +25,7 @@ import {
 import { Virtuoso } from "react-virtuoso";
 import { WindowInstance } from "@/types/app";
 import { useReqTimelineEnhanced } from "@/hooks/useReqTimelineEnhanced";
-import { useGrimoire } from "@/core/state";
+import { useAddWindow, useGrimoire } from "@/core/state";
 import { useRelayState } from "@/hooks/useRelayState";
 import { useOutboxRelays } from "@/hooks/useOutboxRelays";
 import { AGGREGATOR_RELAYS } from "@/services/loaders";
@@ -99,7 +99,7 @@ const MemoizedFeedEvent = memo(
  * Shows truncated ID with click to open
  */
 function EventIdPreview({ eventId }: { eventId: string }) {
-  const { addWindow } = useGrimoire();
+  const addWindow = useAddWindow();
 
   const handleClick = useCallback(() => {
     addWindow("open", { pointer: { id: eventId } });
@@ -727,7 +727,8 @@ export default function ReqViewer({
   title = "nostr-events",
   windowId = "pop-up",
 }: ReqViewerProps) {
-  const { state, addWindow, updateWindow } = useGrimoire();
+  const { state, updateWindow } = useGrimoire();
+  const addWindow = useAddWindow();
   const { relays: relayStates } = useRelayState();
 
   // Get active account for alias resolution

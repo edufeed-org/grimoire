@@ -1,5 +1,5 @@
 import { manPages } from "@/types/man";
-import { useGrimoire } from "@/core/state";
+import { useAddWindow } from "@/core/state";
 import { CenteredContent } from "./ui/CenteredContent";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
@@ -22,7 +22,7 @@ export function ExecutableCommand({
   children: React.ReactNode;
   spellId?: string;
 }) {
-  const { addWindow } = useGrimoire();
+  const addWindow = useAddWindow();
 
   const handleClick = async () => {
     const parts = commandLine.trim().split(/\s+/);

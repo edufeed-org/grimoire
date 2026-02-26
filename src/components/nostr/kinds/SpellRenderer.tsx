@@ -12,7 +12,7 @@ import { CopyableJsonViewer } from "@/components/JsonViewer";
 import { User, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { UserName } from "../UserName";
-import { useGrimoire } from "@/core/state";
+import { useAddWindow, useGrimoire } from "@/core/state";
 import { useProfile } from "@/hooks/useProfile";
 import { useNostrEvent } from "@/hooks/useNostrEvent";
 import { getDisplayName } from "@/lib/nostr-utils";
@@ -29,7 +29,7 @@ export function MePlaceholder({
   className?: string;
   pubkey?: string;
 }) {
-  const { addWindow } = useGrimoire();
+  const addWindow = useAddWindow();
   const profile = useProfile(pubkey);
   const displayName = pubkey ? getDisplayName(pubkey, profile) : "$me";
 
@@ -67,7 +67,7 @@ export function ContactsPlaceholder({
   className?: string;
   pubkey?: string;
 }) {
-  const { addWindow } = useGrimoire();
+  const addWindow = useAddWindow();
   const contactList = useNostrEvent(
     pubkey
       ? {

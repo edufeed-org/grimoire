@@ -2,7 +2,7 @@ import { NostrEvent } from "@/types/nostr";
 import { KindBadge } from "./KindBadge";
 import { Wifi } from "lucide-react";
 import { getSeenRelays } from "applesauce-core/helpers/relays";
-import { useGrimoire } from "@/core/state";
+import { useAddWindow } from "@/core/state";
 import { getKindName } from "@/constants/kinds";
 import {
   DropdownMenu,
@@ -22,7 +22,7 @@ interface EventFooterProps {
  * Right: Relay count dropdown
  */
 export function EventFooter({ event }: EventFooterProps) {
-  const { addWindow } = useGrimoire();
+  const addWindow = useAddWindow();
 
   // Get relays this event was seen on
   const seenRelaysSet = getSeenRelays(event);

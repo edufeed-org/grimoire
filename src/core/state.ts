@@ -136,6 +136,38 @@ const activeGrimoireStateAtom = atom(
   },
 );
 
+/**
+ * Lightweight hook that returns only the addWindow callback.
+ * Does NOT subscribe to state changes — safe for use in deeply nested components
+ * (e.g., MarkdownContent, NostrMention) that only need to open windows.
+ */
+export const useAddWindow = () => {
+  const dispatch = useSetAtom(activeGrimoireStateAtom);
+
+  return useCallback(
+    (
+      appId: AppId,
+      props: any,
+      commandString?: string,
+      customTitle?: string,
+      spellId?: string,
+    ) => {
+      dispatch({
+        type: "UPDATE",
+        updater: (prev) =>
+          Logic.addWindow(prev, {
+            appId,
+            props,
+            commandString,
+            customTitle,
+            spellId,
+          }),
+      });
+    },
+    [dispatch],
+  );
+};
+
 // The Hook
 export const useGrimoire = () => {
   const state = useAtomValue(activeGrimoireStateAtom);

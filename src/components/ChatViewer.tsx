@@ -47,7 +47,7 @@ import { RelaysDropdown } from "./chat/RelaysDropdown";
 import { MessageReactions } from "./chat/MessageReactions";
 import { StatusBadge } from "./live/StatusBadge";
 import { ChatMessageContextMenu } from "./chat/ChatMessageContextMenu";
-import { useGrimoire } from "@/core/state";
+import { useAddWindow } from "@/core/state";
 import { Button } from "./ui/button";
 import LoginDialog from "./nostr/LoginDialog";
 import {
@@ -512,7 +512,7 @@ export function ChatViewer({
   customTitle,
   headerPrefix,
 }: ChatViewerProps) {
-  const { addWindow } = useGrimoire();
+  const addWindow = useAddWindow();
 
   // Get active account with signing capability
   const { pubkey, canSign, signer } = useAccount();

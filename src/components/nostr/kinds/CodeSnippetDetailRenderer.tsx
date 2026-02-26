@@ -4,7 +4,7 @@ import { ExternalLink } from "lucide-react";
 import { CodeCopyButton } from "@/components/CodeCopyButton";
 import { SyntaxHighlight } from "@/components/SyntaxHighlight";
 import { useCopy } from "@/hooks/useCopy";
-import { useGrimoire } from "@/core/state";
+import { useAddWindow } from "@/core/state";
 import { useNostrEvent } from "@/hooks/useNostrEvent";
 import {
   getCodeLanguage,
@@ -32,7 +32,7 @@ interface Kind1337DetailRendererProps {
  * Note: NIP-C0 helpers wrap getTagValue which caches internally
  */
 export function Kind1337DetailRenderer({ event }: Kind1337DetailRendererProps) {
-  const { addWindow } = useGrimoire();
+  const addWindow = useAddWindow();
   const { copy, copied } = useCopy();
 
   // All these helpers wrap getTagValue, which caches internally

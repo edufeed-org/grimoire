@@ -1,5 +1,5 @@
 import type { RelayNode } from "@/lib/relay-transformer";
-import { useGrimoire } from "@/core/state";
+import { useAddWindow } from "@/core/state";
 
 interface RelayNodeProps {
   node: RelayNode;
@@ -18,7 +18,7 @@ function formatRelayUrlForDisplay(url: string): string {
  * Renders a relay URL as a clickable link that opens the relay viewer
  */
 export function Relay({ node }: RelayNodeProps) {
-  const { addWindow } = useGrimoire();
+  const addWindow = useAddWindow();
   const { url } = node;
 
   const displayUrl = formatRelayUrlForDisplay(url);

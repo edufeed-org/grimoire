@@ -1,5 +1,5 @@
 import { getNIPInfo } from "../lib/nip-icons";
-import { useGrimoire } from "@/core/state";
+import { useAddWindow } from "@/core/state";
 import { isNipDeprecated } from "@/constants/nips";
 
 export interface NIPBadgeProps {
@@ -19,7 +19,7 @@ export function NIPBadge({
   showName = true,
   showNIPPrefix = true,
 }: NIPBadgeProps) {
-  const { addWindow } = useGrimoire();
+  const addWindow = useAddWindow();
   const nipInfo = getNIPInfo(nipNumber);
   const name = nipInfo?.name || `NIP-${nipNumber}`;
   const description =
