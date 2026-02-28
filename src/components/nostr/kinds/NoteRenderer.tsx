@@ -37,11 +37,11 @@ function ParentEventCard({
   return (
     <div
       onClick={onClickHandler}
-      className="flex items-center gap-2 p-1 bg-muted/20 text-xs hover:bg-muted/30 cursor-crosshair rounded transition-colors"
+      className="flex items-baseline gap-2 p-1 bg-muted/20 text-xs hover:bg-muted/30 cursor-crosshair rounded transition-colors"
     >
       <Tooltip>
         <TooltipTrigger asChild>
-          <Icon className="size-3 flex-shrink-0" />
+          <Icon className="size-3 flex-shrink-0 translate-y-[1px]" />
         </TooltipTrigger>
         <TooltipContent>
           <p>{tooltipText}</p>
