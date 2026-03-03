@@ -21,7 +21,10 @@ export function useRepositoryRelays(repoAddress: string | undefined): {
   repositoryEvent: NostrEvent | undefined;
 } {
   const repoPointer = useMemo(
-    () => (repoAddress ? parseReplaceableAddress(repoAddress) : undefined),
+    () =>
+      repoAddress
+        ? (parseReplaceableAddress(repoAddress) ?? undefined)
+        : undefined,
     [repoAddress],
   );
 
