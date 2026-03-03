@@ -106,7 +106,7 @@ export const ProfileSuggestionList = forwardRef<
               <UserName pubkey={item.pubkey} />
             </div>
             {item.nip05 && (
-              <div className="truncate text-xs text-popover-foreground/60">
+              <div className="truncate text-xs text-muted-foreground">
                 {item.nip05}
               </div>
             )}
@@ -117,23 +117,14 @@ export const ProfileSuggestionList = forwardRef<
     [items, selectedIndex, command],
   );
 
-  if (items.length === 0) {
-    return (
-      <div className="rounded-md border border-border/50 bg-popover p-4 text-sm text-popover-foreground/60 shadow-md">
-        No profiles found
-      </div>
-    );
-  }
+  if (items.length === 0) return null;
 
-  const listHeight = Math.max(
-    Math.min(items.length, MAX_VISIBLE) * ITEM_HEIGHT,
-    ITEM_HEIGHT + 8,
-  );
+  const listHeight = Math.min(items.length, MAX_VISIBLE) * ITEM_HEIGHT;
 
   return (
     <div
       role="listbox"
-      className="w-[320px] rounded-md border border-border/50 bg-popover text-popover-foreground shadow-md overflow-hidden"
+      className="w-[320px] max-w-full rounded-md border border-border/50 bg-popover text-popover-foreground shadow-md overflow-hidden"
     >
       <Virtuoso
         ref={virtuosoRef}

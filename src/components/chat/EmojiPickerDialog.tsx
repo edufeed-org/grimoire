@@ -46,9 +46,12 @@ function updateReactionHistory(emoji: string): void {
 /**
  * EmojiPickerDialog - Searchable emoji picker for reactions
  *
+ * Layout: top (recently used) emojis → search bar → scrollable list
+ * This keeps the dialog close button away from the search input.
+ *
  * Features:
+ * - Recently used emojis shown as quick-pick buttons at the top
  * - Real-time search using FlexSearch with scrollable virtualized results
- * - Frequently used emoji at top when no search query
  * - Supports both unicode and NIP-30 custom emoji
  * - Keyboard navigation (arrow keys, enter, escape)
  * - Tracks usage in localStorage
@@ -94,13 +97,30 @@ export function EmojiPickerDialog({
     }
   }, [open]);
 
-  // Get frequently used emojis from history
+  // Get frequently used emojis from history (sorted by use count)
   const frequentlyUsed = useMemo(() => {
     const history = getReactionHistory();
     return Object.entries(history)
       .sort((a, b) => b[1] - a[1])
       .map(([emoji]) => emoji);
   }, []);
+
+  // Resolve top 8 recently used emojis to EmojiSearchResult for rendering
+  const topEmojis = useMemo<EmojiSearchResult[]>(() => {
+    if (frequentlyUsed.length === 0) return [];
+    const results: EmojiSearchResult[] = [];
+    for (const emojiStr of frequentlyUsed.slice(0, 8)) {
+      if (emojiStr.startsWith(":") && emojiStr.endsWith(":")) {
+        const shortcode = emojiStr.slice(1, -1);
+        const custom = service.getByShortcode(shortcode);
+        if (custom) results.push(custom);
+      } else {
+        const found = searchResults.find((r) => r.url === emojiStr);
+        if (found) results.push(found);
+      }
+    }
+    return results;
+  }, [frequentlyUsed, searchResults, service]);
 
   // When no search query: show recently used first, then fill with search results
   // When searching: show search results only
@@ -216,7 +236,7 @@ export function EmojiPickerDialog({
               />
             )}
           </span>
-          <span className="truncate text-sm text-popover-foreground/80">
+          <span className="truncate text-sm text-popover-foreground">
             :{item.shortcode}:
           </span>
         </button>
@@ -227,26 +247,64 @@ export function EmojiPickerDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-xs p-4 gap-2">
-        {/* Search input */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 size-4 text-muted-foreground" />
-          <Input
-            type="text"
-            placeholder="Search emojis..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={handleKeyDown}
-            className="pl-9"
-            autoFocus
-          />
+      <DialogContent className="max-w-xs p-0 gap-0 overflow-hidden">
+        {/* Top emojis — recently used quick-picks.
+            This section also provides natural spacing for the dialog close (X) button,
+            which is absolutely positioned at top-right of the dialog. */}
+        <div className="flex items-center gap-1 px-3 pt-3 pb-2 pr-10 min-h-[48px]">
+          {topEmojis.length > 0 ? (
+            <div
+              className="flex items-center gap-1 overflow-x-auto [&::-webkit-scrollbar]:hidden"
+              style={{ scrollbarWidth: "none" }}
+            >
+              {topEmojis.map((emoji) => (
+                <button
+                  key={emoji.shortcode}
+                  onClick={() => handleEmojiClick(emoji)}
+                  title={`:${emoji.shortcode}:`}
+                  className="flex size-8 items-center justify-center rounded hover:bg-muted/60 transition-colors flex-shrink-0"
+                >
+                  {emoji.source === "unicode" ? (
+                    <span className="text-lg leading-none">{emoji.url}</span>
+                  ) : (
+                    <img
+                      src={emoji.url}
+                      alt={`:${emoji.shortcode}:`}
+                      className="size-6 object-contain"
+                      loading="lazy"
+                    />
+                  )}
+                </button>
+              ))}
+            </div>
+          ) : (
+            <span className="text-xs font-medium text-muted-foreground select-none">
+              Emoji
+            </span>
+          )}
+        </div>
+
+        {/* Search bar */}
+        <div className="px-3 pb-2">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Search emojis..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
+              className="pl-9"
+              autoFocus
+            />
+          </div>
         </div>
 
         {/* Scrollable emoji list */}
         {displayEmojis.length > 0 ? (
           <div
             role="listbox"
-            className="rounded-md border border-border/50 bg-popover text-popover-foreground overflow-hidden"
+            className="border-t border-border/50 bg-popover text-popover-foreground"
           >
             <Virtuoso
               ref={virtuosoRef}
@@ -257,11 +315,12 @@ export function EmojiPickerDialog({
                 overflow:
                   displayEmojis.length <= MAX_VISIBLE ? "hidden" : "auto",
               }}
+              className="[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border/60 [&::-webkit-scrollbar-track]:bg-transparent"
               itemContent={renderItem}
             />
           </div>
         ) : (
-          <div className="flex items-center justify-center py-6 text-sm text-muted-foreground">
+          <div className="flex items-center justify-center py-6 text-sm text-muted-foreground border-t border-border/50">
             No emojis found
           </div>
         )}

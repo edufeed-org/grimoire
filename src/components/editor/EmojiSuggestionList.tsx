@@ -103,7 +103,7 @@ export const EmojiSuggestionList = forwardRef<
               />
             )}
           </span>
-          <span className="truncate text-sm text-popover-foreground/80">
+          <span className="truncate text-sm text-popover-foreground">
             :{item.shortcode}:
           </span>
         </button>
@@ -112,23 +112,14 @@ export const EmojiSuggestionList = forwardRef<
     [items, selectedIndex, command],
   );
 
-  if (items.length === 0) {
-    return (
-      <div className="rounded-md border border-border/50 bg-popover p-4 text-sm text-popover-foreground/60 shadow-md">
-        No emoji found
-      </div>
-    );
-  }
+  if (items.length === 0) return null;
 
-  const listHeight = Math.max(
-    Math.min(items.length, MAX_VISIBLE) * ITEM_HEIGHT,
-    ITEM_HEIGHT + 8,
-  );
+  const listHeight = Math.min(items.length, MAX_VISIBLE) * ITEM_HEIGHT;
 
   return (
     <div
       role="listbox"
-      className="w-[260px] rounded-md border border-border/50 bg-popover text-popover-foreground shadow-md overflow-hidden"
+      className="w-[260px] max-w-full rounded-md border border-border/50 bg-popover text-popover-foreground shadow-md overflow-hidden"
     >
       <Virtuoso
         ref={virtuosoRef}

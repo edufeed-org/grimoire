@@ -81,7 +81,10 @@ export function SuggestionPopover({
   }, [clientRect, refs, update]);
 
   return createPortal(
-    <div ref={refs.setFloating} style={{ ...floatingStyles, zIndex: 50 }}>
+    <div
+      ref={refs.setFloating}
+      style={{ ...floatingStyles, zIndex: 50, maxWidth: "calc(100vw - 16px)" }}
+    >
       {children}
     </div>,
     document.body,

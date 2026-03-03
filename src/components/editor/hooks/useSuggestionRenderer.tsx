@@ -61,10 +61,16 @@ export function useSuggestionRenderer<T>(
   const onModEnterRef = useRef(options?.onModEnter);
   onModEnterRef.current = options?.onModEnter;
 
+  // Track whether a suggestion session is currently active.
+  // Guards against stale onUpdate calls that arrive after onExit fires
+  // (e.g. async items() resolving after the suggestion was dismissed).
+  const isActiveRef = useRef(false);
+
   // Stable render factory — uses setState which is guaranteed stable by React
   const render = useCallback(
     (): ReturnType<NonNullable<SuggestionOptions["render"]>> => ({
       onStart: (props) => {
+        isActiveRef.current = true;
         setState({
           items: props.items as T[],
           command: props.command as (item: T) => void,
@@ -73,6 +79,9 @@ export function useSuggestionRenderer<T>(
       },
 
       onUpdate: (props) => {
+        // Ignore updates that arrive after the suggestion session ended.
+        // This prevents "No profiles found" from reappearing after autocomplete.
+        if (!isActiveRef.current) return;
         setState({
           items: props.items as T[],
           command: props.command as (item: T) => void,
@@ -100,6 +109,7 @@ export function useSuggestionRenderer<T>(
       },
 
       onExit: () => {
+        isActiveRef.current = false;
         setState(null);
       },
     }),
@@ -108,16 +118,20 @@ export function useSuggestionRenderer<T>(
 
   const placement = options?.placement ?? "bottom-start";
 
-  const portal = state ? (
-    <SuggestionPopover clientRect={state.clientRect} placement={placement}>
-      <Component
-        ref={componentRef}
-        items={state.items}
-        command={state.command}
-        onClose={() => setState(null)}
-      />
-    </SuggestionPopover>
-  ) : null;
+  // Only render the portal when there are items to show.
+  // When items is empty the popup is hidden — this prevents a "No results found"
+  // message from flashing briefly when Tiptap fires onUpdate([]) just before onExit.
+  const portal =
+    state && state.items.length > 0 ? (
+      <SuggestionPopover clientRect={state.clientRect} placement={placement}>
+        <Component
+          ref={componentRef}
+          items={state.items}
+          command={state.command}
+          onClose={() => setState(null)}
+        />
+      </SuggestionPopover>
+    ) : null;
 
   return { render, portal };
 }
