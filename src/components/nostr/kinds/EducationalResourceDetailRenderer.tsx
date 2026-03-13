@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import { NostrEvent } from "@/types/nostr";
-import { ExternalLink } from "lucide-react";
 import { useAddWindow } from "@/core/state";
 import {
   getAmbName,
@@ -24,8 +23,10 @@ import {
 import { Label } from "@/components/ui/label";
 import { UserName } from "@/components/nostr/UserName";
 import { MediaEmbed } from "../MediaEmbed";
+import { ExternalLink } from "@/components/ExternalLink";
+import { formatLanguageName, formatISODate } from "@/lib/locale-utils";
 
-interface Kind30142DetailRendererProps {
+interface EducationalResourceDetailRendererProps {
   event: NostrEvent;
 }
 
@@ -33,9 +34,9 @@ interface Kind30142DetailRendererProps {
  * Detail renderer for Kind 30142 - Educational Resource (AMB)
  * Full metadata view with all AMB properties
  */
-export function Kind30142DetailRenderer({
+export function EducationalResourceDetailRenderer({
   event,
-}: Kind30142DetailRendererProps) {
+}: EducationalResourceDetailRendererProps) {
   const addWindow = useAddWindow();
 
   const name = getAmbName(event);
@@ -95,17 +96,9 @@ export function Kind30142DetailRenderer({
           </div>
         )}
         {externalUrls[0] && (
-          <a
-            href={externalUrls[0]}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 text-muted-foreground hover:underline hover:decoration-dotted"
-          >
-            <ExternalLink className="size-4 flex-shrink-0" />
-            <span className="text-sm break-all">
-              {formatReferenceLabel(externalUrls[0])}
-            </span>
-          </a>
+          <ExternalLink href={externalUrls[0]} size="sm">
+            {formatReferenceLabel(externalUrls[0])}
+          </ExternalLink>
         )}
       </div>
 
@@ -119,7 +112,7 @@ export function Kind30142DetailRenderer({
       <div className="grid grid-cols-2 gap-3 py-2 text-sm">
         {language && (
           <MetadataField label="Language">
-            <span className="font-mono">{language}</span>
+            {formatLanguageName(language)}
           </MetadataField>
         )}
 
@@ -144,15 +137,9 @@ export function Kind30142DetailRenderer({
         {licenseId && (
           <MetadataField label="License">
             {licenseId.startsWith("http") ? (
-              <a
-                href={licenseId}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-primary hover:underline"
-              >
+              <ExternalLink href={licenseId} variant="default" size="sm">
                 {licenseLabel}
-                <ExternalLink className="size-3" />
-              </a>
+              </ExternalLink>
             ) : (
               <span>{licenseLabel}</span>
             )}
@@ -166,11 +153,15 @@ export function Kind30142DetailRenderer({
         )}
 
         {dateCreated && (
-          <MetadataField label="Created">{dateCreated}</MetadataField>
+          <MetadataField label="Created">
+            {formatISODate(dateCreated)}
+          </MetadataField>
         )}
 
         {datePublished && (
-          <MetadataField label="Published">{datePublished}</MetadataField>
+          <MetadataField label="Published">
+            {formatISODate(datePublished)}
+          </MetadataField>
         )}
       </div>
 
@@ -231,7 +222,7 @@ export function Kind30142DetailRenderer({
         <Section title="Keywords">
           <div className="flex flex-wrap gap-1.5">
             {keywords.map((kw) => (
-              <Label key={kw}>#{kw}</Label>
+              <Label key={kw}>{kw}</Label>
             ))}
           </div>
         </Section>
@@ -242,16 +233,9 @@ export function Kind30142DetailRenderer({
         <Section title="References">
           <div className="flex flex-col gap-1">
             {externalUrls.map((url) => (
-              <a
-                key={url}
-                href={url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-sm text-primary hover:underline truncate"
-              >
+              <ExternalLink key={url} href={url} variant="default" size="sm">
                 {formatReferenceLabel(url)}
-                <ExternalLink className="size-3 shrink-0" />
-              </a>
+              </ExternalLink>
             ))}
           </div>
         </Section>

@@ -1,5 +1,6 @@
 import type { NostrEvent } from "@/types/nostr";
 import { getTagValue, getOrComputeCachedValue } from "applesauce-core/helpers";
+import { getBrowserLanguage } from "@/lib/locale-utils";
 
 /**
  * AMB (Allgemeines Metadatenprofil für Bildungsressourcen) Helpers
@@ -251,12 +252,6 @@ export function getAmbRelatedResources(
 // ============================================================================
 // Internal utilities
 // ============================================================================
-
-/** Get base language code from browser (e.g., "de", "en") */
-function getBrowserLanguage(): string {
-  const lang = navigator?.language || "en";
-  return lang.split("-")[0].toLowerCase();
-}
 
 /**
  * Find the best prefLabel for a given prefix using locale fallback:
